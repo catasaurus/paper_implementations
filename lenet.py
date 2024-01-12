@@ -35,15 +35,20 @@ def main():
 class Lenet:
     def __init__(self):
         self.c1 = nn.Conv2d(1, 6, 5, padding=2)
-        self.c3 = nn.Conv2d()
-        self.c5 = nn.Linear()
+        self.c3 = nn.Conv2d(1, 16, 5)
+        self.c5 = nn.Conv2d(1, 120, 5)
 
     def __call__(self, x):
         x = self.c1(x)
+        x = x.tanh()
         x = x.avg_pool2d()
         x = self.c3(x)
-        x = x.avg_pool2d()
+        x = x.tanh()
+        x = x.avg_pool2d(kernel_size=(5, 5))
         x = self.c5(x)
+        x = x.sigmoid()
+
+        return x
 
 if __name__ == "__main__":
     main()
