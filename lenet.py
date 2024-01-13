@@ -60,7 +60,7 @@ def main():
     model = Lenet()
     optim = nn.optim.Adam(nn.state.get_parameters(model))
 
-    for i in range(10):
+    for i in range(70):
         samples = Tensor.randint(512, high=X_train.shape[0])
         optim.zero_grad()
         loss = model(X_train[samples]).sparse_categorical_crossentropy(
@@ -74,7 +74,7 @@ class Lenet:
         self.c1 = nn.Conv2d(1, 6, 5, padding=2)
         self.c3 = nn.Conv2d(6, 16, 5)
         self.c5 = nn.Conv2d(16, 120, 5)
-        self.f6 = nn.Linear(1, 84)
+        self.f6 = nn.Linear(120, 84)
 
     def __call__(self, x: Tensor):
         x = self.c1(x)
@@ -85,8 +85,9 @@ class Lenet:
         x = x.avg_pool2d()
         x = self.c5(x)
         x = x.tanh()
+        x = x.flatten(1)
         x = self.f6(x)
-        x = x.sigmoid()
+        x = x.log_softmax()
 
         return x
 
